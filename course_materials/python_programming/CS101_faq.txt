@@ -1,0 +1,46 @@
+CS101 Introduction to Python Programming - Frequently Asked Questions (Spring 2027)
+
+Q: How do I submit an assignment?
+A: Submit through the course page on NTU Learn. Upload one file named with your student ID and the assignment number, for example 20241387_A1.py. Notebook files (.ipynb) are accepted for assignments 3 and 4 only.
+
+Q: What is the late policy?
+A: Each day of delay costs 10% of the assignment mark, for up to 3 days. After 3 days the mark is zero. Quizzes cannot be taken late.
+
+Q: Can I get an extension?
+A: Extensions are given only for medical reasons or emergencies with documents. Email Dr. Karim Hassan before the deadline, not after. The teaching assistant, Eng. Nour Adel, cannot approve extensions.
+
+Q: How much attendance is required?
+A: At least 75% of lectures and labs. A student below 75% cannot sit the final exam.
+
+Q: When are the office hours?
+A: Sunday and Tuesday from 12:00 to 14:00 in Room B-214. Emails are answered within 2 working days. Do not send code in screenshots; attach the file.
+
+Q: When is the lab and who runs it?
+A: The lab is on Wednesday from 10:00 to 12:00 in Lab C-105, run by Eng. Nour Adel.
+
+Q: When is the midterm and what can I bring?
+A: The midterm is on Tue, Mar 30, 2027 and lasts 90 minutes. It is closed book, but you may bring one handwritten A4 sheet of notes. It covers weeks 1 to 6.
+
+Q: What is the passing grade?
+A: You need at least 50% overall and at least 40% in the final exam.
+
+Q: Which Python version do I need?
+A: Python 3.12. Code written for older versions usually works, but the grader runs Python 3.12.
+
+Q: Can I use ChatGPT or other AI tools?
+A: You may use them to understand a concept or an error message. You may not submit code written by an AI tool or by another student. Any copied solution gets zero, and a second case is reported to the disciplinary committee.
+
+Q: How does the final project work?
+A: The project is done in teams of 2 or 3 students and is worth 15%. Teams must send the topic by Thu, Apr 22, 2027. The project is a Python program that reads a CSV or JSON file, processes the data and prints or saves a report. Presentations are in week 14 and last 8 minutes plus 2 minutes of questions.
+
+Q: What does IndentationError mean?
+A: Python uses indentation to mark blocks. The error means a line has the wrong number of spaces. Use 4 spaces for each level and do not mix tabs and spaces.
+
+Q: What does NameError mean?
+A: You used a name that does not exist yet. Usually the name has a spelling mistake or you used the variable before creating it.
+
+Q: Why do I get TypeError: can only concatenate str (not "int") to str?
+A: You tried to join text and a number with +. Convert the number with str() or use an f-string.
+
+Q: Why does input() always give me text?
+A: input() always returns a string. Convert it with int() or float() if you need a number, for example age = int(input("Age: ")).

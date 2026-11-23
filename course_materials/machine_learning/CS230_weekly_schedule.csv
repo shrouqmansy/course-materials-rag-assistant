@@ -1,0 +1,15 @@
+week,start_date,topic,reading,deliverable
+1,2027-02-14,"What is machine learning, types of learning and the ML workflow",Geron ch. 1,
+2,2027-02-21,Data preprocessing and feature engineering,Geron ch. 2,Assignment 1 released
+3,2027-02-28,Linear regression,Geron ch. 4,Assignment 1 due
+4,2027-03-07,Gradient descent and regularization,Geron ch. 4,Assignment 2 released
+5,2027-03-14,Logistic regression and classification metrics,Geron ch. 3 and 4,Assignment 2 due
+6,2027-03-21,k-nearest neighbors and decision trees,Geron ch. 3 and 6,Assignment 3 released
+7,2027-03-28,Midterm exam,None,Midterm exam on 2027-03-29
+8,2027-04-04,Ensemble methods: random forests and gradient boosting,Geron ch. 7,Assignment 3 due
+9,2027-04-11,Model evaluation: cross-validation and hyperparameter tuning,Geron ch. 2 and 3,Assignment 4 released
+10,2027-04-18,Unsupervised learning: k-means and PCA,Geron ch. 8 and 9,Assignment 4 due
+11,2027-04-25,Introduction to neural networks,Geron ch. 10,Project proposal due
+12,2027-05-02,Neural networks in practice with Keras,Geron ch. 10,Assignment 5 released
+13,2027-05-09,Project work,None,Assignment 5 due and project report due
+14,2027-05-16,Project presentations and course review,None,Project presentations

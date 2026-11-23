@@ -1,0 +1,45 @@
+CS230 Machine Learning Fundamentals - Midterm Review Notes
+
+Exam information
+Date: Mon, Mar 29, 2027, 09:00 to 10:30. Closed book. A scientific calculator is allowed. The exam covers weeks 1 to 6 and is worth 20% of the course grade.
+
+Structure of the exam
+Part A: 10 multiple-choice questions (20 marks).
+Part B: 5 short-answer questions (40 marks).
+Part C: 2 problem-solving questions with calculations (40 marks).
+
+Topics to review
+1. Types of learning: supervised, unsupervised, reinforcement. Be able to give one example for each.
+2. Train, validation and test sets. The test set is used only once, at the end.
+3. Data preprocessing: handling missing values, one-hot encoding for categories, scaling with StandardScaler or MinMaxScaler.
+4. Linear regression: mean squared error, the gradient descent update, effect of the learning rate.
+5. Regularization: Ridge (L2) and Lasso (L1), and the role of alpha.
+6. Logistic regression: sigmoid function, decision threshold of 0.5 by default.
+7. Metrics: accuracy, precision, recall, F1, confusion matrix, ROC-AUC.
+8. k-nearest neighbors: effect of k, why scaling matters, slow prediction on large data.
+9. Decision trees: Gini impurity, why deep trees overfit, max_depth as a control.
+
+Formulas you must know
+MSE = (1/n) * sum of (y_true - y_pred)^2
+Accuracy = (TP + TN) / (TP + TN + FP + FN)
+Precision = TP / (TP + FP)
+Recall = TP / (TP + FN)
+F1 = 2 * Precision * Recall / (Precision + Recall)
+Sigmoid(z) = 1 / (1 + e^(-z))
+
+Worked example
+A model is tested on 100 emails. It finds TP = 30, FP = 10, FN = 20 and TN = 40.
+Accuracy = (30 + 40) / 100 = 0.70
+Precision = 30 / (30 + 10) = 0.75
+Recall = 30 / (30 + 20) = 0.60
+F1 = 2 * 0.75 * 0.60 / (0.75 + 0.60) = 0.667
+
+Sample questions
+1. Why can a model with 98% accuracy still be a bad model?
+2. Explain the difference between L1 and L2 regularization.
+3. A model has 99% training accuracy and 70% test accuracy. What is the problem and name two ways to fix it?
+4. Why must features be scaled before using k-nearest neighbors?
+5. What happens in gradient descent if the learning rate is too large?
+
+Tips
+Practice the Assignment 1 to 3 solutions again, the solutions are posted on the course page. The teaching assistant Eng. Youssef Samir holds an extra review session on the Thursday before the exam in Lab C-210 from 12:00 to 14:00.

@@ -1,0 +1,21 @@
+employee_id,first_name,last_name,department_id,job_title,salary,hire_date,manager_id
+1,Hala,Mansour,1,Engineering Manager,16500,2016-03-01,
+2,Tarek,Fahmy,1,Senior Software Engineer,13200,2018-07-15,1
+3,Salma,Ibrahim,1,Software Engineer,9400,2021-01-10,1
+4,Mostafa,Nabil,1,Software Engineer,8700,2022-09-05,2
+5,Rania,Gaber,1,Data Engineer,10800,2020-05-18,1
+6,Adel,Sorour,2,Sales Director,15000,2015-11-20,
+7,Heba,Zaki,2,Sales Executive,7200,2019-02-11,6
+8,Karim,Wahba,2,Sales Executive,6900,2021-08-23,6
+9,Dalia,Hegazy,2,Account Manager,8800,2018-04-02,6
+10,Walid,Saad,2,Sales Executive,6500,2023-03-14,9
+11,Mona,Khattab,3,HR Manager,12400,2017-06-12,
+12,Amr,Lotfy,3,HR Specialist,7600,2020-10-01,11
+13,Noha,Barakat,3,Recruiter,6800,2022-01-17,11
+14,Sherif,Kamel,4,Finance Manager,14800,2016-09-05,
+15,Yasmin,Reda,4,Accountant,8100,2019-12-08,14
+16,Hossam,Taha,4,Accountant,7900,2021-05-24,14
+17,Reem,Shawky,4,Financial Analyst,9900,2020-02-03,14
+18,Ahmed,Darwish,1,QA Engineer,8300,2022-06-27,2
+19,Farah,Essam,1,DevOps Engineer,11200,2019-08-19,1
+20,Bassem,Younis,2,Sales Intern,3500,2026-09-01,9

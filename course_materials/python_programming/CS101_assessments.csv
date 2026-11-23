@@ -1,0 +1,15 @@
+item,type,weight,due_date,topics,submission
+Assignment 1: Variables and Operators,Assignment,6%,2027-03-04,Weeks 1-2,NTU Learn upload (.py)
+Assignment 2: Conditionals and Loops,Assignment,6%,2027-03-18,Weeks 3-4,NTU Learn upload (.py)
+Assignment 3: Lists and Dictionaries,Assignment,6%,2027-03-25,Weeks 4-5,NTU Learn upload (.py or .ipynb)
+Assignment 4: Functions,Assignment,6%,2027-04-15,Week 6,NTU Learn upload (.py or .ipynb)
+Assignment 5: Files and Exceptions,Assignment,6%,2027-04-29,Weeks 8-9,NTU Learn upload (.py)
+Quiz 1,Quiz,2%,2027-02-23,Weeks 1-2,"In class, 15 minutes"
+Quiz 2,Quiz,2%,2027-03-09,Weeks 3-4,"In class, 15 minutes"
+Quiz 3,Quiz,2%,2027-03-23,Weeks 5-6,"In class, 15 minutes"
+Quiz 4,Quiz,2%,2027-04-13,Weeks 8-9,"In class, 15 minutes"
+Quiz 5,Quiz,2%,2027-05-04,Weeks 10-11,"In class, 15 minutes"
+Midterm exam,Exam,20%,2027-03-30,Weeks 1-6,"Hall A-3, 90 minutes"
+Final project topic proposal,Milestone,0%,2027-04-22,Team of 2-3 students,Email to instructor
+Final project,Project,15%,2027-05-17,Weeks 8-13,NTU Learn upload (zip) and presentation
+Final exam,Exam,25%,2027-05-24,Weeks 1-14,"Hall A-3, 2 hours"

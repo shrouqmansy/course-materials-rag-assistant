@@ -1,0 +1,224 @@
+"""Standalone Gradio app for the Course Q&A RAG system.
+
+Usage:
+    export GROQ_API_KEY="your_key"
+    python app.py
+"""
+import os
+import re
+import glob
+import getpass
+
+import pandas as pd
+import chromadb
+import gradio as gr
+from pypdf import PdfReader
+from docx import Document
+from groq import Groq
+from sentence_transformers import SentenceTransformer, CrossEncoder
+
+# ---------------- Settings ----------------
+CHUNK_SIZE = 700
+CHUNK_OVERLAP = 25
+CANDIDATES = 12
+TOP_K = 4
+EMBED_MODEL = 'BAAI/bge-base-en-v1.5'
+RERANK_MODEL = 'cross-encoder/ms-marco-MiniLM-L-6-v2'
+LLM_MODEL = 'openai/gpt-oss-120b'
+QUERY_PREFIX = 'Represent this sentence for searching relevant passages: '
+DATA_FOLDER = os.environ.get('COURSE_FOLDER', 'course_materials')
+COURSE_NAMES = {
+    'CS101': 'CS101 Introduction to Python Programming',
+    'CS230': 'CS230 Machine Learning Fundamentals',
+    'CS220': 'CS220 Databases and SQL',
+}
+SYSTEM_PROMPT = (
+    'You are a teaching assistant for university courses. Answer the student question '
+    'using only the context given. If the answer is not in the context, reply exactly: '
+    'I could not find the answer in the course materials. Keep the answer short and clear. '
+    'If the courses give different answers, say which course each answer belongs to. '
+    'Do not use outside knowledge.'
+)
+
+
+# ---------------- Reading files ----------------
+def read_pdf(path):
+    reader = PdfReader(path)
+    return '\n\n'.join(page.extract_text() or '' for page in reader.pages)
+
+
+def read_docx(path):
+    doc = Document(path)
+    return '\n\n'.join(p.text for p in doc.paragraphs if p.text.strip())
+
+
+def read_txt(path):
+    with open(path, encoding='utf-8') as file:
+        return file.read()
+
+
+def read_csv(path):
+    df = pd.read_csv(path, dtype=str)
+    rows = []
+    for _, row in df.iterrows():
+        rows.append('; '.join(f'{col}: {row[col]}' for col in df.columns if pd.notna(row[col])) + '.')
+    return '\n\n'.join(rows)
+
+
+def clean_text(text):
+    text = text.replace('\r', '')
+    text = re.sub(r'[ \t]+', ' ', text)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+
+
+READERS = {'pdf': read_pdf, 'docx': read_docx, 'txt': read_txt, 'csv': read_csv}
+
+
+def load_documents():
+    if not os.path.exists(DATA_FOLDER):
+        raise FileNotFoundError(f'Folder "{DATA_FOLDER}" not found. Put the course files in it.')
+    paths = sorted(glob.glob(DATA_FOLDER + '/**/*.*', recursive=True))
+    paths = [p for p in paths if p.lower().endswith(tuple('.' + e for e in READERS))]
+    documents = []
+    for path in paths:
+        extension = path.split('.')[-1].lower()
+        file_name = os.path.basename(path)
+        course_code = file_name.split('_')[0]
+        text = clean_text(READERS[extension](path))
+        documents.append({
+            'course': COURSE_NAMES.get(course_code, course_code),
+            'source': file_name,
+            'type': extension,
+            'text': text,
+        })
+    return documents
+
+
+# ---------------- Chunking ----------------
+def split_text(text, size, overlap):
+    pieces = []
+    for block in text.split('\n\n'):
+        block = block.strip()
+        if len(block) <= size:
+            pieces.append(block)
+        else:
+            pieces += re.split(r'(?<=[.!?])\s+|\n', block)
+    pieces = [p for p in pieces if p.strip()]
+    chunks = []
+    current = ''
+    for piece in pieces:
+        if current and len(current) + len(piece) > size:
+            chunks.append(current)
+            current = ' '.join(current.split()[-overlap:]) + '\n' + piece
+        else:
+            current = current + '\n' + piece if current else piece
+    if current:
+        chunks.append(current)
+    return chunks
+
+
+def build_chunks(documents):
+    chunks = []
+    for doc in documents:
+        for number, piece in enumerate(split_text(doc['text'], CHUNK_SIZE, CHUNK_OVERLAP)):
+            header = f'Course: {doc["course"]}\nSource: {doc["source"]}\n'
+            chunks.append({
+                'id': f'{doc["source"]}_{number}',
+                'text': header + piece,
+                'course': doc['course'],
+                'source': doc['source'],
+            })
+    return chunks
+
+
+# ---------------- Build the knowledge base ----------------
+print('Loading documents...')
+documents = load_documents()
+chunks = build_chunks(documents)
+print(f'{len(documents)} files, {len(chunks)} chunks')
+
+print('Loading models and building the vector database...')
+embedder = SentenceTransformer(EMBED_MODEL)
+reranker = CrossEncoder(RERANK_MODEL)
+
+texts = [c['text'] for c in chunks]
+embeddings = embedder.encode(texts, batch_size=32, normalize_embeddings=True)
+
+client = chromadb.EphemeralClient()
+collection = client.create_collection('course_materials')
+collection.add(
+    ids=[c['id'] for c in chunks],
+    documents=texts,
+    embeddings=embeddings.tolist(),
+    metadatas=[{'course': c['course'], 'source': c['source']} for c in chunks],
+)
+
+api_key = os.environ.get('GROQ_API_KEY') or getpass.getpass('Groq API key: ')
+llm = Groq(api_key=api_key)
+
+
+# ---------------- RAG ----------------
+def retrieve(question, course=None):
+    query_vector = embedder.encode(QUERY_PREFIX + question, normalize_embeddings=True).tolist()
+    where = {'course': course} if course else None
+    n_results = min(CANDIDATES, collection.count())
+    result = collection.query(query_embeddings=[query_vector], n_results=n_results, where=where)
+    docs = result['documents'][0]
+    metas = result['metadatas'][0]
+    if not docs:
+        return []
+    scores = reranker.predict([[question, doc] for doc in docs])
+    ranked = sorted(zip(scores, docs, metas), key=lambda x: x[0], reverse=True)
+    return ranked[:TOP_K]
+
+
+def answer_question(question, course=None):
+    hits = retrieve(question, course)
+    context = '\n\n'.join(f'[{i + 1}] {doc}' for i, (score, doc, meta) in enumerate(hits))
+    response = llm.chat.completions.create(
+        model=LLM_MODEL,
+        messages=[
+            {'role': 'system', 'content': SYSTEM_PROMPT},
+            {'role': 'user', 'content': f'Context:\n{context}\n\nQuestion: {question}'},
+        ],
+        temperature=0,
+        max_tokens=2000,
+    )
+    return response.choices[0].message.content.strip(), hits
+
+
+def get_sources(answer, hits):
+    if 'could not find' in answer.lower():
+        return []
+    good = [meta for score, doc, meta in hits if score > 0]
+    if not good and hits:
+        good = [hits[0][2]]
+    return sorted(set(f'{m["course"]} / {m["source"]}' for m in good))
+
+
+# ---------------- Gradio UI ----------------
+course_choices = ['All courses'] + sorted(set(d['course'] for d in documents))
+
+
+def chat(question, course):
+    if not question.strip():
+        return 'Please type a question.', ''
+    selected = None if course == 'All courses' else course
+    answer, hits = answer_question(question, selected)
+    return answer, '\n'.join(get_sources(answer, hits))
+
+
+demo = gr.Interface(
+    fn=chat,
+    inputs=[
+        gr.Textbox(label='Your question', lines=2),
+        gr.Dropdown(course_choices, value='All courses', label='Course'),
+    ],
+    outputs=[gr.Markdown(label='Answer'), gr.Textbox(label='Sources')],
+    title='Course Q&A Assistant',
+    description='Ask a question about the course materials.',
+)
+
+if __name__ == '__main__':
+    demo.launch()
