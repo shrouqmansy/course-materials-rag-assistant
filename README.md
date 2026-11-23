@@ -30,8 +30,7 @@ Answers are generated only from the retrieved content, with source attribution.
 ├── .gitignore
 ├── notebook.ipynb        # full pipeline + evaluation + Gradio app
 ├── app.py                # standalone Gradio app
-├── course_materials/     # PDF, DOCX, TXT, CSV files for 3 courses
-└── screenshots/
+└── course_materials/     # PDF, DOCX, TXT, CSV files for 3 courses
 ```
 
 ## Evaluation
@@ -58,10 +57,7 @@ pip install -r requirements.txt
 export GROQ_API_KEY="your_key_here"      # Windows PowerShell: $env:GROQ_API_KEY="your_key_here"
 python app.py
 ```
-Then open the local URL printed in the terminal (usually http://127.0.0.1:7860).
+Then open the link printed in the terminal.
 
 ## Tech stack
 Python, ChromaDB, Sentence-Transformers, Groq, Gradio, pypdf, python-docx, pandas
-
-## Screenshots
-![App](screenshots/app.png)
